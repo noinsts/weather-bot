@@ -1,0 +1,7 @@
+.env
+*.db
+*.log
+/src/__pycache__
+*.pyc
+/.idea
+*.xml
