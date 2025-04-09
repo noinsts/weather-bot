@@ -5,12 +5,12 @@ from dotenv import load_dotenv
 from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
-from aiogram.filters import  Command, CommandObject
+from aiogram.filters import  Command
 from aiogram.enums import ParseMode
 
 from .base import BaseHandler
 from src.utils.states import CityAwait
-from src.keyboards.reply import WeatherMenuKeyboard
+from src.keyboards.reply import AllMenu
 from src.utils.translation import WeatherTranslator
 
 
@@ -26,10 +26,16 @@ class WeatherHandler(BaseHandler):
             self.log.warning("WEATHER API KEY NOT FOUND")
 
     def register_handlers(self):
-        self.router.message.register(self.weather, Command('weather'))
-        self.router.message.register(self.weather, F.text == '☀️ Дізнатись погоду')
+        self.router.message.register(self.home_city_weather, Command('home_weather'))
+        self.router.message.register(self.home_city_weather, F.text == '☀️ Погода в рідному місті')
+        self.router.message.register(self.process_get_city, CityAwait.waiting_for_city)
 
-    async def weather(self, message: Message, state: FSMContext):
+        self.router.message.register(self.another_city_weather, Command('weather'))
+        self.router.message.register(self.another_city_weather, F.text == '⛈️ Погода в іншому місті')
+        self.router.message.register(self.process_get_acw, CityAwait.waiting_for_another_city)
+
+
+    async def home_city_weather(self, message: Message, state: FSMContext):
         city = self.db.get_city(message.from_user.id)
 
         if not city:
@@ -40,7 +46,24 @@ class WeatherHandler(BaseHandler):
 
 
     async def process_get_city(self, message: Message, state: FSMContext):
+        user_id = message.from_user.id
         city = message.text
+
+        self.db.add_city(user_id, city)
+        await message.answer('Успіх! Ваше рідне місто додадо бо БД.')
+
+        await state.clear()
+        await self.return_city(message, city)
+
+
+    async def another_city_weather(self, message: Message, state: FSMContext):
+        await state.set_state(CityAwait.waiting_for_another_city)
+        await message.answer('Вкажіть назву міста')
+
+
+    async def process_get_acw(self, message: Message, state: FSMContext):
+        city = message.text
+
         await state.clear()
         await self.return_city(message, city)
 
@@ -77,6 +100,6 @@ class WeatherHandler(BaseHandler):
 
             await message.answer(
                 forecast_message,
-                reply_markup=WeatherMenuKeyboard().get_keyboard(),
+                reply_markup=AllMenu().get_keyboard(),
                 parse_mode=ParseMode.HTML
             )

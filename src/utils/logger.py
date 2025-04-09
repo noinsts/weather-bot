@@ -6,7 +6,7 @@ def setup_logger():
     logger.setLevel(logging.INFO)
 
     # Отримуємо шлях до кореня проекту (три рівні вище від поточного файлу)
-    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
     # 🗂️ Шлях до вкладеної папки для логів
     log_path = os.path.join(project_root, "log/debug")

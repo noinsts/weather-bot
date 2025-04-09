@@ -6,7 +6,7 @@ from aiogram.filters import Command
 from .base import BaseHandler
 from src.utils.states import CityAwait
 
-from src.keyboards.reply import WeatherMenuKeyboard
+from src.keyboards.reply import AllMenu
 from src.handlers.common import CommonHandlers
 
 
@@ -35,5 +35,8 @@ class LocationHandler(BaseHandler):
         city = message.text
 
         self.db.add_city(user_id, city)
-        await message.answer("Успіх! Ваше місто додано до БД", reply_markup=WeatherMenuKeyboard().get_keyboard())
+        await message.answer(
+            "Успіх! Ваше місто додано до БД", 
+            reply_markup=AllMenu().get_keyboard()
+        )
         await state.clear()

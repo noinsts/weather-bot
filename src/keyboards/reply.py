@@ -14,7 +14,8 @@ class MainMenuKeyboardRegister(BaseKeyboard):
     def get_keyboard(self):
         kb = [
             [KeyboardButton(text='🗒️ Допомога')],
-            [KeyboardButton(text='☀️ Дізнатись погоду')]
+            [KeyboardButton(text='☀️ Погода в рідному місті')],
+            [KeyboardButton(text='⛈️ Погода в іншому місті')]
         ]
         return ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
 
@@ -23,16 +24,17 @@ class HelpMenuKeyboard(BaseKeyboard):
     def get_keyboard(self):
         kb = [
             [KeyboardButton(text='🏁 Меню')],
-            [KeyboardButton(text='🏙️ Додати місто')],
-            [KeyboardButton(text='☀️ Дізнатись погоду')]
+            [KeyboardButton(text='☀️ Погода в рідному місті')],
+            [KeyboardButton(text='⛈️ Погода в іншому місті')]
         ]
         return ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
 
 
-class WeatherMenuKeyboard(BaseKeyboard):
+class AllMenu(BaseKeyboard):
     def get_keyboard(self):
         kb = [
-            [KeyboardButton(text='🏁 Меню')],
-            [KeyboardButton(text='☀️ Дізнатись погоду')]
+            [KeyboardButton(text='🏁 Меню'), KeyboardButton(text='🗒️ Допомога')],
+            [KeyboardButton(text='☀️ Погода в рідному місті')],
+            [KeyboardButton(text='⛈️ Погода в іншому місті')]
         ]
         return ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
