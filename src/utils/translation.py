@@ -1,14 +1,13 @@
 import os
 import json
 
-from src.logger import setup_logger
+from src.utils.logger import setup_logger
 
 class WeatherTranslator:
     def __init__(self, json_path=None):
         self.translations = {}
         self.log = setup_logger()
-        if json_path:
-            self.load_translations(json_path)
+        self.load_translations(json_path)
 
     def load_translations(self, json_path=None):
         try:

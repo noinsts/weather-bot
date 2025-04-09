@@ -64,21 +64,15 @@ class WeatherHandler(BaseHandler):
             wind_speed = data['wind']['speed']
             desc = data['weather'][0]['description']
 
-            self.log.info(f'Engl desc: {desc}')
-
             translator = WeatherTranslator()
-
-            ukr_desc = translator.translations.get(desc.lower())
-
-            self.log.info(f'Ukr_desc = {ukr_desc}')
-
+            ukr_desc = translator.translations.get(desc.lower()).capitalize()
 
             forecast_message = (
                 f"🌤️ <b>Прогноз погоди для {city}</b>\n\n"
                 f"🌡 <b>Температура:</b> {temp}°C\n"
                 f"☔ <b>Вологість:</b> {humid}%\n"
                 f"🌬 <b>Швидкість вітру:</b> {wind_speed} м/с\n"
-                f"☁️ <b>Погода:</b> {ukr_desc}."
+                f"☁️ <b>Погода:</b> {ukr_desc}"
             )
 
             await message.answer(

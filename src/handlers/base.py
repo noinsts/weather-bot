@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from aiogram import Router
 from src.db.database import Database
-from src.logger import setup_logger
+from src.utils.logger import setup_logger
 
 
 class BaseHandler(ABC):
