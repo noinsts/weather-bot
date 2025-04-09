@@ -22,7 +22,9 @@ class MainMenuKeyboardRegister(BaseKeyboard):
 class HelpMenuKeyboard(BaseKeyboard):
     def get_keyboard(self):
         kb = [
-            [KeyboardButton(text='🏙️ Додати місто')]
+            [KeyboardButton(text='🏁 Меню')],
+            [KeyboardButton(text='🏙️ Додати місто')],
+            [KeyboardButton(text='☀️ Дізнатись погоду')]
         ]
         return ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
 

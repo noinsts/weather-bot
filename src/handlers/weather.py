@@ -6,10 +6,12 @@ from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from aiogram.filters import  Command, CommandObject
+from aiogram.enums import ParseMode
 
 from .base import BaseHandler
 from src.utils.states import CityAwait
 from src.keyboards.reply import WeatherMenuKeyboard
+from src.utils.translation import WeatherTranslator
 
 
 class WeatherHandler(BaseHandler):
@@ -59,8 +61,28 @@ class WeatherHandler(BaseHandler):
 
             temp = data['main']['temp']
             humid = data['main']['humidity']
+            wind_speed = data['wind']['speed']
+            desc = data['weather'][0]['description']
+
+            self.log.info(f'Engl desc: {desc}')
+
+            translator = WeatherTranslator()
+
+            ukr_desc = translator.translations.get(desc.lower())
+
+            self.log.info(f'Ukr_desc = {ukr_desc}')
+
+
+            forecast_message = (
+                f"🌤️ <b>Прогноз погоди для {city}</b>\n\n"
+                f"🌡 <b>Температура:</b> {temp}°C\n"
+                f"☔ <b>Вологість:</b> {humid}%\n"
+                f"🌬 <b>Швидкість вітру:</b> {wind_speed} м/с\n"
+                f"☁️ <b>Погода:</b> {ukr_desc}."
+            )
 
             await message.answer(
-                f"Температура в місті {city}: {temp}, вологість: {humid}%.",
-                reply_markup=WeatherMenuKeyboard().get_keyboard()
+                forecast_message,
+                reply_markup=WeatherMenuKeyboard().get_keyboard(),
+                parse_mode=ParseMode.HTML
             )
