@@ -18,7 +18,7 @@ class Database:
         self.create_tables()
 
 
-    def create_tables(self):
+    def create_tables(self) -> None:
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS cities (
                 user_id INTEGER PRIMARY KEY, 
@@ -29,16 +29,27 @@ class Database:
         self.conn.commit()
 
 
-    def get_city(self, user_id):
+    def get_city(self, user_id: int) -> str | None:
         self.cursor.execute("SELECT city FROM cities WHERE user_id = ?", (user_id, ))
         results = self.cursor.fetchone()
         return results[0] if results else None
 
 
-    def add_city(self, user_id, name):
+    def add_city(self, user_id: int, name: str) -> None:
         self.cursor.execute("INSERT INTO cities (user_id, city) VALUES (?, ?)", (user_id, name))
         self.conn.commit()
 
 
-    def close(self):
+    def edit_city(self, user_id: int, name: str) -> None:
+        self.cursor.execute("UPDATE cities SET city = ? WHERE user_id = ?", (name, user_id))
+        self.conn.commit()
+
+
+    def delete_city(self, user_id: int) -> None:
+        self.cursor.execute("DELETE FROM cities WHERE user_id = ?", (user_id, ))
+        self.conn.commit()
+
+
+    def close(self) -> None:
         self.conn.close()
+

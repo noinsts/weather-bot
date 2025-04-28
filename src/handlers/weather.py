@@ -1,28 +1,29 @@
 import os
+
 import requests
 from dotenv import load_dotenv
-
 from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
-from aiogram.filters import  Command
+from aiogram.filters import Command
 from aiogram.enums import ParseMode
 
 from .base import BaseHandler
 from src.utils import CityAwait, WeatherTranslator
 from src.keyboards.reply import AllMenu, AllMenuRegister
 
+load_dotenv()
+
 
 class WeatherHandler(BaseHandler):
     def __init__(self):
         super().__init__()
-        self.load_api_key()
 
-    def load_api_key(self):
-        load_dotenv()
         self.api_key = os.getenv("WEATHER_API")
+
         if not self.api_key:
             self.log.warning("WEATHER API KEY NOT FOUND")
+
 
     def register_handlers(self):
         self.router.message.register(self.home_city_weather, Command('home_weather'))
@@ -35,6 +36,7 @@ class WeatherHandler(BaseHandler):
 
 
     async def home_city_weather(self, message: Message, state: FSMContext):
+        """Обробник кнопки '☀️ Погода в рідному місті'"""
         city = self.db.get_city(message.from_user.id)
 
         if not city:
@@ -45,6 +47,7 @@ class WeatherHandler(BaseHandler):
 
 
     async def process_get_city(self, message: Message, state: FSMContext):
+        """Обробник вводу назви іншого міста"""
         user_id = message.from_user.id
         city = message.text
 
@@ -55,7 +58,9 @@ class WeatherHandler(BaseHandler):
         await self.return_city(message, city)
 
 
-    async def another_city_weather(self, message: Message, state: FSMContext):
+    @staticmethod
+    async def another_city_weather(message: Message, state: FSMContext):
+        """Обробник кнопки '⛈️ Погода в іншому місті'"""
         await state.set_state(CityAwait.waiting_for_another_city)
         await message.answer('Вкажіть назву міста')
 
@@ -68,6 +73,7 @@ class WeatherHandler(BaseHandler):
 
 
     async def return_city(self, message: Message, city: str):
+        """Запит до OpenWeatherAPI з отримання погоди"""
         base_url = 'http://api.openweathermap.org/data/2.5/weather'
 
         params = {

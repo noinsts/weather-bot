@@ -4,17 +4,22 @@ from aiogram.filters import CommandStart, Command
 from aiogram.enums.parse_mode import ParseMode
 
 from .base import BaseHandler
-from src.keyboards.reply import MainMenuKeyboard, MainMenuKeyboardRegister, HelpMenuKeyboard, HelpMenuKeyboardRegister
+from src.keyboards.reply import (MainMenuKeyboard, MainMenuKeyboardRegister,
+                                 HelpMenuKeyboard, HelpMenuKeyboardRegister)
 
 
 class CommonHandlers(BaseHandler):
     def register_handlers(self):
         self.router.message.register(self.cmd_start, CommandStart())
         self.router.message.register(self.cmd_start, F.text == '🏁 Меню')
+        self.router.callback_query.register(self.cmd_start, F.data == 'back_to_menu')
+
         self.router.message.register(self.cmd_help, Command('help'))
         self.router.message.register(self.cmd_help, F.text == '🗒️ Допомога')
 
+
     async def cmd_start(self, message: Message):
+        """Обробник команди 'start'"""
         if self.db.get_city(message.from_user.id):
             rm = MainMenuKeyboardRegister().get_keyboard()
         else:
@@ -28,7 +33,9 @@ class CommonHandlers(BaseHandler):
             parse_mode=ParseMode.HTML
         )
 
+
     async def cmd_help(self, message: Message):
+        """Обробник команди 'help'"""
         if self.db.get_city(message.from_user.id):  # користувач зареєстрований
             text = (
                 "🆘 <b>Допомога</b>\n\n"
