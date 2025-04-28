@@ -9,9 +9,8 @@ from aiogram.filters import  Command
 from aiogram.enums import ParseMode
 
 from .base import BaseHandler
-from src.utils.states import CityAwait
-from src.keyboards.reply import AllMenu
-from src.utils.translation import WeatherTranslator
+from src.utils import CityAwait, WeatherTranslator
+from src.keyboards.reply import AllMenu, AllMenuRegister
 
 
 class WeatherHandler(BaseHandler):
@@ -98,8 +97,13 @@ class WeatherHandler(BaseHandler):
                 f"☁️ <b>Погода:</b> {ukr_desc}"
             )
 
+            if self.db.get_city(message.from_user.id):
+                rm = AllMenuRegister().get_keyboard()
+            else:
+                rm = AllMenu().get_keyboard()
+
             await message.answer(
                 forecast_message,
-                reply_markup=AllMenu().get_keyboard(),
+                reply_markup=rm,
                 parse_mode=ParseMode.HTML
             )

@@ -4,8 +4,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.enums.parse_mode import ParseMode
 
 from .base import BaseHandler
-from src.keyboards.reply import MainMenuKeyboard, MainMenuKeyboardRegister
-from src.keyboards.reply import HelpMenuKeyboard
+from src.keyboards.reply import MainMenuKeyboard, MainMenuKeyboardRegister, HelpMenuKeyboard, HelpMenuKeyboardRegister
 
 
 class CommonHandlers(BaseHandler):
@@ -30,11 +29,23 @@ class CommonHandlers(BaseHandler):
         )
 
     async def cmd_help(self, message: Message):
+        if self.db.get_city(message.from_user.id):  # користувач зареєстрований
+            text = (
+                "🆘 <b>Допомога</b>\n\n"
+                "☀️ Щоб дізнатися прогноз погоди у вашому місті — натисніть кнопку нижче.\n"
+                "⛈️ Або дізнайтеся погоду в іншому місті командою <code>/weather</code>."
+            )
+            keyboard = HelpMenuKeyboardRegister().get_keyboard()
+        else:  # користувач НЕ зареєстрований
+            text = (
+                "🆘 <b>Допомога</b>\n\n"
+                "➕ Щоб додати місто до бази даних — натисніть кнопку нижче.\n"
+                "⛈️ Або дізнайтеся погоду в будь-якому місті командою <code>/weather</code>."
+            )
+            keyboard = HelpMenuKeyboard().get_keyboard()
+
         await message.answer(
-            "🆘 <b>Допомога</b>\n\n"
-            "➕ Щоб додати місто до бази даних — натисніть кнопку нижче.\n"
-            "🌤 Щоб дізнатися прогноз погоди — напишіть команду <code>/weather</code>.\n"
-            "📍 Назву міста можна не вказувати, якщо воно вже додане у вашу БД.",
+            text,
             parse_mode=ParseMode.HTML,
-            reply_markup=HelpMenuKeyboard().get_keyboard()
+            reply_markup=keyboard
         )

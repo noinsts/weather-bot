@@ -1,7 +1,7 @@
 import os
 import json
 
-from src.utils.logger import setup_logger
+from .logger import setup_logger
 
 class WeatherTranslator:
     def __init__(self, json_path=None):
@@ -20,7 +20,6 @@ class WeatherTranslator:
 
             with open(absolute_path, 'r', encoding='utf-8') as f:
                 self.translations = json.load(f)
-            self.log.info(f"Переклади завантажено: {self.translations}")  # Додано для налагодження
         except FileNotFoundError:
             self.log.warning("Файл weather_descriptions.json не знайдено.")
         except json.JSONDecodeError:

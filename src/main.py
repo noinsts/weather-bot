@@ -5,10 +5,8 @@ from aiogram import Bot, Dispatcher
 from dotenv import load_dotenv
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from src.utils.logger import setup_logger
-from handlers.common import CommonHandlers
-from handlers.location import LocationHandler
-from handlers.weather import WeatherHandler
+from utils import setup_logger
+from handlers import *
 
 
 load_dotenv()
