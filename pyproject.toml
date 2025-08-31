@@ -1,0 +1,22 @@
+[project]
+name = "weather-bot"
+version = "0.1.0"
+description = "Telegram weahter bot"
+authors = [
+    {name = "Andriy"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+
+[tool.poetry.dependencies]
+python = ">=3.12"
+aiogram = "^3.0.0"
+python-dotenv = "^1.0.0"
+requests = "^2.0.0"
+sqlalchemy = "^2.0.42"
+psycopg2-binary = "^2.9.10"
+asyncpg = "^0.30.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
