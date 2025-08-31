@@ -1,34 +1,24 @@
-import os
-import logging
+from loguru import logger
+import sys
+
 
 def setup_logger():
-    logger = logging.getLogger("aiogram_bot")
-    logger.setLevel(logging.INFO)
+    # Видаляємо стандартний handler
+    logger.remove()
 
-    # Отримуємо шлях до кореня проекту (три рівні вище від поточного файлу)
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    # Консоль з кольорами
+    logger.add(sys.stderr,
+               format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{message}</cyan>")
 
-    # 🗂️ Шлях до вкладеної папки для логів
-    log_path = os.path.join(project_root, "log/debug")
-    os.makedirs(log_path, exist_ok=True)
+    # Файл з ротацією
+    logger.add("logs/bot.log",
+               rotation="50 MB",
+               retention="2 weeks",
+               compression="zip",
+               format="{time} [{level}] {message}")
 
-    # 📄 Формат логів
-    log_format = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
-
-    # 📁 Запис у log/debug/bot.log
-    file_handler = logging.FileHandler(f"{log_path}/bot.log", mode="a")
-    file_handler.setFormatter(log_format)
-
-    # 🖥️ Вивід у консоль
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(log_format)
-
-    # 💣 Уникаємо дублювання логів
-    if logger.hasHandlers():
-        logger.handlers.clear()
-
-    # ➕ Додаємо хендлери
-    logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
+    # Окремо критичні помилки
+    logger.add("logs/critical.log",
+               filter=lambda record: record["level"].name in ["ERROR", "CRITICAL"])
 
     return logger
