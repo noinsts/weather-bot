@@ -6,6 +6,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from src.utils import setup_logger
+from src.middlewares import LoggingMiddleware
 from src.handlers import *
 
 load_dotenv()
@@ -17,6 +18,11 @@ class WeatherBot:
         self.bot = Bot(token=TOKEN)
         self.storage = MemoryStorage()
         self.dp = Dispatcher(storage=self.storage)
+
+        logging_middleware = LoggingMiddleware()
+        self.dp.message.middleware(logging_middleware)
+        self.dp.callback_query.middleware(logging_middleware)
+
         self.log = setup_logger()
 
         self.register_routers()
