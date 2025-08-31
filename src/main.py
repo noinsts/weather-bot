@@ -1,13 +1,12 @@
 import os
 import asyncio
 
-from aiogram import Bot, Dispatcher
 from dotenv import load_dotenv
+from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from utils import setup_logger
-from handlers import *
-
+from src.utils import setup_logger
+from src.handlers import *
 
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
@@ -22,12 +21,10 @@ class WeatherBot:
 
         self.register_routers()
 
-
     def register_routers(self):
         self.dp.include_router(CommonHandlers().router)
         self.dp.include_router(LocationHandler().router)
         self.dp.include_router(WeatherHandler().router)
-
 
     async def run(self):
         try:
@@ -35,6 +32,7 @@ class WeatherBot:
             await self.dp.start_polling(self.bot)
         finally:
             await self.bot.session.close()
+
 
 if __name__ == "__main__":
     bot = WeatherBot()
